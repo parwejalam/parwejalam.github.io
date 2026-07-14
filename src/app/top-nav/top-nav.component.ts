@@ -17,6 +17,7 @@ export class TopNavComponent implements OnInit {
     { label: 'About', id: '#about' },
     { label: 'Skills', id: '#skills' },
     { label: 'Projects', id: '#projects' },
+    { label: 'Blog', id: '/blog/' },
     { label: 'Contact', id: '#contact' },
   ];
 

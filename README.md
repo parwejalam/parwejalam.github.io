@@ -24,19 +24,23 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 ## Deployment
 
-The site is a static Angular SPA hosted on **GitHub Pages as a project page**:
+The site is a static Angular SPA hosted on **GitHub Pages as the user site**:
 
-- **Live URL:** https://parwejalam.github.io/portfolio/
+- **Live URL:** https://parwejalam.github.io/
+- **Repo name:** must be `parwejalam.github.io` (GitHub serves a user site only
+  from a repo with this exact name).
 - **Trigger:** every push to `main` (PRs build but do not publish).
 - **Pipeline:** [.github/workflows/node.js.yml](.github/workflows/node.js.yml) runs
   `npm ci --legacy-peer-deps` → `npm run build` → `npm run deploy:404`, then
   publishes `dist/portfolio/browser` to the `gh-pages` branch.
-- **Base href:** the build sets `--base-href=/portfolio/` so all assets resolve
-  under the `/portfolio/` sub-path. Do **not** add a `CNAME` unless you move to a
-  custom/root domain — a custom domain also requires changing base href to `/`.
+- **Base href:** the build sets `--base-href=/` so all assets resolve from the
+  domain root. If you later move to a custom domain, add a `CNAME` (base href
+  stays `/`).
 - **SPA routing:** `npm run deploy:404` copies `index.html` to `404.html` so deep
-  links (e.g. `/portfolio/projects`) still load on hard refresh, since GitHub
-  Pages has no built-in SPA fallback.
+  links (e.g. `/projects`) still load on hard refresh, since GitHub Pages has no
+  built-in SPA fallback.
+- **Blog:** lives at [https://parwejalam.github.io/blog/](https://parwejalam.github.io/blog/),
+  a separate project site (repo `blog`). Linked from the top nav.
 
 To reproduce a production build locally:
 

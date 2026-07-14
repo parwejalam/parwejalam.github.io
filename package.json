@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start:all": "ng serve --host 0.0.0.0 --port 4203",
-    "build": "ng build --base-href=/portfolio/",
+    "build": "ng build --base-href=/",
     "deploy:404": "node -e \"require('fs').copyFileSync('dist/portfolio/browser/index.html','dist/portfolio/browser/404.html')\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

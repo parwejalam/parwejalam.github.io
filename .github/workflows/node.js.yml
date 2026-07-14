@@ -1,5 +1,6 @@
-# Builds the Angular app and deploys it to GitHub Pages (project page).
-# Live URL: https://parwejalam.github.io/portfolio/
+# Builds the Angular app and deploys it to GitHub Pages (user site).
+# Live URL: https://parwejalam.github.io/
+# Requires the repo to be named `parwejalam.github.io`.
 # Docs: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Build and Deploy

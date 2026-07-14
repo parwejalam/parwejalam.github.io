@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { IconsService } from './services/icons.service';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { HomeComponent } from './home/home.component';
@@ -24,14 +24,25 @@ import * as aos from 'aos';
     ScrollOnTopDirective
   ]
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   title = 'portfolio';
   constructor(private icon: IconsService) { }
-  ngOnInit() {
+
+  ngAfterViewInit(): void {
+    // Init once the view (all child components) has rendered.
     aos.init({
-      duration: 2000,
-    })
+      duration: 1000,
+      easing: 'ease-in-out',
+      once: true,
+      mirror: false
+    });
+
+    // Recalculate trigger positions once images/fonts finish loading, so a
+    // cold load (slow assets) animates the same as a cached refresh.
+    if (document.readyState === 'complete') {
+      aos.refreshHard();
+    } else {
+      window.addEventListener('load', () => aos.refreshHard(), { once: true });
+    }
   }
-
-
 }

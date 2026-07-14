@@ -28,13 +28,8 @@ export class AboutComponent implements OnInit, OnDestroy {
   constructor(private themeService: ThemeService) { }
 
   ngOnInit(): void {
-    // Initialize AOS
-    AOS.init({
-      duration: 1000,
-      easing: 'ease-in-out',
-      once: false,
-      mirror: false
-    });
+    // AOS is initialized once in AppComponent. Here we only refresh it so
+    // animations update when the theme changes.
 
     // Subscribe to theme changes
     this.themeSubscription = this.themeService.theme$.subscribe(theme => {

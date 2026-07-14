@@ -1,5 +1,6 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# Builds the Angular app and deploys it to GitHub Pages (project page).
+# Live URL: https://parwejalam.github.io/portfolio/
+# Docs: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Build and Deploy
 
@@ -16,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -24,15 +25,24 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: npm i --force
+
+      # legacy-peer-deps replaces the old `npm i --force`: reproducible install
+      # from the lockfile while tolerating the project's peer-dep ranges.
+      - run: npm ci --legacy-peer-deps
       - run: npm run build
 
+      # GitHub Pages has no SPA fallback. Serving index.html as 404.html makes
+      # deep links (e.g. /portfolio/projects) resolve on hard refresh.
+      - run: npm run deploy:404
+
+      # Only publish on pushes to main, not on pull requests.
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@4.1.5
+        if: github.event_name == 'push'
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          BRANCH: gh-pages
-          FOLDER: dist/portfolio/browser
+          branch: gh-pages
+          folder: dist/portfolio/browser

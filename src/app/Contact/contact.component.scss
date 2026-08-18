@@ -1,21 +1,3 @@
-// Component-wide form control override
-:host {
-    .form-control {
-        &:focus {
-            border-color: transparent !important;
-            box-shadow: none !important;
-            outline: none !important;
-        }
-    }
-
-    // Ensure floating labels work correctly
-    .form-floating>.form-control:focus~label,
-    .form-floating>.form-control:not(:placeholder-shown)~label {
-        color: inherit;
-        transform: none;
-    }
-}
-
 // Contact Section Styles
 #contact {
     background: linear-gradient(135deg, var(--background-color) 0%, rgba(221, 15, 36, 0.05) 100%);
@@ -295,28 +277,18 @@
     }
 }
 
-// Override any remaining Bootstrap form styles within this component
-.contact-form {
-
-    input,
-    textarea,
-    select {
-        &:focus {
-            box-shadow: none !important;
-            border-color: transparent !important;
-        }
-
-        &.form-control {
-            &:focus {
-                box-shadow: none !important;
-                border-color: transparent !important;
-            }
-        }
-    }
-}
-
 // Form Styles
 .contact-form {
+
+    // Geometry is shared between the fields and their labels, so keep these
+    // in sync if the padding changes.
+    $field-border: 2px;
+    $field-pad-x: 1.25rem;
+    $field-pad-top: 1.625rem;
+    $field-pad-bottom: 0.625rem;
+    $textarea-pad-top: 1.75rem;
+    $label-x: calc(#{$field-pad-x} + #{$field-border});
+
     .form-floating {
         position: relative;
 
@@ -324,13 +296,15 @@
         .custom-textarea {
             width: 100%;
             background: var(--card-bg);
-            border: 2px solid var(--card-border);
+            border: $field-border solid var(--card-border);
             border-radius: 15px;
             color: var(--text-color);
+            font-family: inherit;
             font-size: 1rem;
-            padding: 1rem 1.25rem;
-            transition: all 0.3s ease;
-            resize: none;
+            line-height: 1.25;
+            // Top-heavy so the floated label has room above the text
+            padding: $field-pad-top $field-pad-x $field-pad-bottom;
+            transition: border-color 0.3s ease, background 0.3s ease;
             box-sizing: border-box;
 
             // Remove any inherited Bootstrap styles
@@ -338,24 +312,17 @@
             -moz-appearance: none;
             appearance: none;
 
-            // Ensure consistent styling
-            // line-height: 1.5;
-            font-family: inherit;
-
             &:focus {
                 outline: none !important;
                 border-color: #dd0f24 !important;
                 background: var(--card-bg) !important;
                 box-shadow: none !important;
-
-                // Prevent any browser default focus styles
-                -webkit-box-shadow: none !important;
-                -moz-box-shadow: none !important;
             }
 
+            // The label is the visible hint. The placeholder only exists so
+            // :placeholder-shown can detect an empty field, so hide it.
             &::placeholder {
-                color: var(--muted-text);
-                opacity: 1;
+                color: transparent;
             }
 
             // Prevent browser autofill styling
@@ -367,49 +334,107 @@
                 transition: background-color 5000s ease-in-out 0s;
             }
 
-            // Valid state
-            &:valid {
-                border-color: var(--card-border);
-            }
-
-            // Invalid state
-            &:invalid:not(:placeholder-shown) {
+            // Error border follows Angular's state so it appears at the same
+            // time as the message below the field, never before.
+            &.ng-invalid.ng-touched.ng-dirty {
                 border-color: #dc3545;
             }
         }
 
+        .custom-input {
+            height: 3.75rem;
+        }
+
         .custom-textarea {
-            min-height: 120px;
+            display: block;
+            min-height: 140px;
+            padding-top: $textarea-pad-top;
+            padding-bottom: 0.875rem;
             resize: vertical;
         }
 
-        label {
-            color: var(--muted-text);
-            font-weight: 500;
-            padding: 0 0.5rem;
-            background: var(--card-bg);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            pointer-events: none;
-
-            // Ensure label positioning
+        // Reset Bootstrap's .form-floating > label, which is sized height: 100%
+        // and would otherwise render as a slab across the field.
+        >label {
             position: absolute;
             top: 0;
             left: 0;
-            transform-origin: 0 0;
-            // transform: translate(0.75rem, 1rem) scale(1);
             z-index: 2;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted-text);
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: visible;
+            pointer-events: none;
+            transform-origin: 0 0;
+            // Resting: sits on the field's text line
+            transform: translate($label-x, 1.25rem);
+            transition: transform 0.2s ease, color 0.2s ease;
+
+            @media (prefers-reduced-motion: reduce) {
+                transition: none;
+            }
         }
 
-        .custom-input:focus+label,
-        .custom-textarea:focus+label,
-        .custom-input:not(:placeholder-shown)+label,
-        .custom-textarea:not(:placeholder-shown)+label {
-            color: #dd0f24 !important;
+        // A textarea's first line is at the top, not the vertical centre
+        >.custom-textarea~label {
+            transform: translate($label-x, calc(#{$textarea-pad-top} + #{$field-border}));
+        }
+
+        // Floated state. `~` rather than `+` so browser extensions that inject
+        // siblings after the control (Grammarly and friends) can't break it.
+        .custom-input:focus~label,
+        .custom-input:not(:placeholder-shown)~label,
+        .custom-input:-webkit-autofill~label,
+        .custom-textarea:focus~label,
+        .custom-textarea:not(:placeholder-shown)~label {
+            transform: translate($label-x, 0.5rem) scale(0.85);
+        }
+
+        // Brand red marks the focused field only, so a filled form stays calm
+        .custom-input:focus~label,
+        .custom-textarea:focus~label {
+            color: var(--field-focus-label);
             font-weight: 600;
-            transform: translate(0.75rem, 0.25rem) scale(0.85);
-            background: transparent;
-            padding: 0 0.25rem;
+        }
+
+        // A long message scrolls up behind the floated textarea label, so mask
+        // the strip above the first text line. Painted between the field and
+        // the label (which sits at z-index 2). --field-solid-bg is the opaque
+        // equivalent of the translucent field colour.
+        &:has(.custom-textarea)::after {
+            content: '';
+            position: absolute;
+            top: $field-border;
+            left: $field-border;
+            right: $field-border;
+            height: 1.625rem;
+            // Explicit z-index: the textarea's scrolling contents can otherwise
+            // composite above an auto-z-index sibling
+            z-index: 1;
+            background: var(--field-solid-bg);
+            border-radius: 13px 13px 0 0;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        // Bootstrap paints its own patch behind a floated textarea label using
+        // --bs-body-bg, which is white in both themes. The mask above replaces it.
+        .custom-textarea~label::after {
+            display: none;
+        }
+
+        // Only needed once the label has floated into that strip
+        &:has(.custom-textarea:focus)::after,
+        &:has(.custom-textarea:not(:placeholder-shown))::after {
+            opacity: 1;
         }
     }
 }

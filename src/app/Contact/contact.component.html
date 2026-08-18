@@ -95,8 +95,9 @@
               <!-- Name field -->
               <div class="col-md-6">
                 <div class="form-floating">
+                  <!-- placeholder must be non-empty (a space) for the floating label -->
                   <input name="name" [(ngModel)]="contactFormValues.name" #name="ngModel" id="nameInput" type="text"
-                    placeholder="" class="custom-input" required minlength="2" />
+                    placeholder=" " class="custom-input" required minlength="2" />
                   <label for="nameInput">Full Name *</label>
                 </div>
                 <div *ngIf="name.errors && name.touched && name.dirty" class="form-text text-danger mt-1">
@@ -108,7 +109,7 @@
               <div class="col-md-6">
                 <div class="form-floating">
                   <input name="email" [(ngModel)]="contactFormValues.email" #email="ngModel" id="emailInput"
-                    type="email" placeholder="" class="custom-input" required
+                    type="email" placeholder=" " class="custom-input" required
                     pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" />
                   <label for="emailInput">Email Address *</label>
                 </div>
@@ -121,7 +122,7 @@
               <div class="col-12">
                 <div class="form-floating">
                   <input name="subject" [(ngModel)]="contactFormValues.subject" #subject="ngModel" id="subjectInput"
-                    type="text" placeholder="" class="custom-input" required />
+                    type="text" placeholder=" " class="custom-input" required />
                   <label for="subjectInput">Subject *</label>
                 </div>
                 <div *ngIf="subject.errors && subject.touched && subject.dirty" class="form-text text-danger mt-1">
@@ -133,7 +134,7 @@
               <div class="col-12">
                 <div class="form-floating">
                   <textarea name="body" [(ngModel)]="contactFormValues.body" #body="ngModel" id="textArea"
-                    class="custom-textarea" placeholder="" required minlength="20" rows="6"></textarea>
+                    class="custom-textarea" placeholder=" " required minlength="20" rows="6"></textarea>
                   <label for="textArea">Your Message *</label>
                 </div>
                 <div *ngIf="body.errors && body.touched && body.dirty" class="form-text text-danger mt-1">

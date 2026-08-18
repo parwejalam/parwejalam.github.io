@@ -15,7 +15,15 @@
 </head>
 
 <body>
-  <app-root></app-root>
+  <app-root>
+    <!-- Replaced the moment Angular boots. It exists so the blog is reachable in
+         the served HTML: this is a client-rendered SPA, and the nav's Blog link
+         lives inside an Angular template, so a crawler that does not execute JS
+         sees no link to /blog/ at all. -->
+    <nav>
+      <a href="/blog/">Blog</a>
+    </nav>
+  </app-root>
 </body>
 
 </html>

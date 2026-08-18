@@ -1,0 +1,10 @@
+# Served at https://parwejalam.github.io/robots.txt.
+#
+# Crawlers only read robots.txt at the host root, and this repo is the user site
+# that owns that root. The blog lives at /blog/ but deploys from a separate repo,
+# so it cannot publish this file itself. Its sitemap is pointed to from here.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://parwejalam.github.io/blog/sitemap.xml
